@@ -29,6 +29,29 @@ public class ClienteDAO {
         this.observacao = observacao;
     }
     
+    public static Cliente getCliente(int codCliente) throws SQLException, ClassNotFoundException {
+        Cliente cliente = null;
+        Connection conn = Conexao.getConnection();
+        String sql = "SELECT * from clientes where cod_cliente = ? ";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, codCliente);
+        ResultSet rs = stmt.executeQuery();
+        if(rs.next()){
+            cliente = new Cliente();
+            
+            cliente.setCod_cliente(rs.getInt("cod_cliente"));
+            cliente.setNome(rs.getString("nome"));
+            cliente.setTelefone(rs.getInt("telefone"));
+            cliente.setObservacao(rs.getString("observacao"));
+            cliente.setEmail(rs.getString("email"));
+            cliente.setObservacao(rs.getString("observacao"));
+        }
+        rs.close();
+        stmt.close();
+    
+        return cliente;
+    }
+    
     public static List<Cliente> get() throws SQLException, ClassNotFoundException {
         List<Cliente> clientes = new ArrayList<Cliente>();
         Connection conn = Conexao.getConnection();
@@ -77,9 +100,9 @@ public class ClienteDAO {
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, cliente.getNome());
         stmt.setInt(2, cliente.getTelefone());
-        stmt.setString(4, cliente.getEmail());
-        stmt.setString(5, cliente.getObservacao());
-        stmt.setInt(6, cliente.getCod_cliente());
+        stmt.setString(3, cliente.getEmail());
+        stmt.setString(4, cliente.getObservacao());
+        stmt.setInt(5, cliente.getCod_cliente());
         int qtdeAtualizado = stmt.executeUpdate();
         //conn.commit(); Não precisa de commit, está setado auto-commit.
         stmt.close();
